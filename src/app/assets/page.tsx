@@ -1,22 +1,23 @@
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableRow
-} from 'flowbite-react'
-
-import { AssetShow } from '../components/AssetShow'
+import { Table, TableBody, TableHead, TableHeadCell } from 'flowbite-react'
+import { AssetsSync } from '../components/AssetsSync'
 import { Asset } from '../models'
+import { TableAssetRow } from './TableAssetRow'
+import { WalletList } from '../components/WalletList'
 
 export async function getAssets(): Promise<Asset[]> {
   const response = await fetch(`http://localhost:3000/assets`)
   return response.json()
 }
 
-export default async function AssetsListPage() {
+export default async function AssetsListPage({
+  searchParams
+}: {
+  searchParams: Promise<{ walletId: string }>
+}) {
+  const { walletId } = await searchParams
+  if (!walletId) {
+    return <WalletList />
+  }
   const assets = await getAssets()
 
   return (
@@ -33,19 +34,12 @@ export default async function AssetsListPage() {
           </TableHead>
           <TableBody>
             {assets.map((asset, key: number) => (
-              <TableRow key={key}>
-                <TableCell>
-                  <AssetShow asset={asset} />
-                </TableCell>
-                <TableCell>R$ {asset.price}</TableCell>
-                <TableCell>
-                  <Button color="light">Comprar/vender</Button>
-                </TableCell>
-              </TableRow>
+              <TableAssetRow key={key} walletId={walletId} asset={asset} />
             ))}
           </TableBody>
         </Table>
       </div>
+      <AssetsSync assetsSymbols={assets.map(asset => asset.symbol)} />
     </div>
   )
 }

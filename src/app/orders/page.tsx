@@ -27,8 +27,7 @@ export default async function OrdersListPage({
 }) {
   const { walletId } = searchParams
   const orders = await getOrders(walletId)
-  console.log('orders ->', orders)
-  console.log('id ->', walletId)
+
   return (
     <div className="flex flex-col space-y-5 flex-grow">
       <article className="format">

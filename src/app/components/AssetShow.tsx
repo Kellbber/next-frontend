@@ -1,20 +1,21 @@
-import { Asset } from '../models'
 import Image from 'next/image'
+import { Asset } from '../models'
 
 export function AssetShow(props: { asset: Asset }) {
+  const { asset } = props
   return (
     <div className="flex space-x-1">
       <div className="content-center">
         <Image
-          src={props.asset.image_url}
-          alt={props.asset.symbol}
+          src={asset.image_url}
+          alt={asset.symbol}
           width={30}
           height={30}
         />
       </div>
       <div className="flex flex-col text-sm">
-        <span>{props.asset.name}</span>
-        <span>{props.asset.symbol}</span>
+        <span>{asset.name}</span>
+        <span>{asset.symbol}</span>
       </div>
     </div>
   )

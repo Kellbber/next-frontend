@@ -5,6 +5,8 @@ import { TabsItem } from '../../components/Tabs'
 import { OrderForm } from '../../components/OrderForm'
 import { ChartComponent } from '../../components/ChartComponent'
 import { AssetChartComponent } from './AssetChartComponent'
+import { getAssetDailies } from '../../../queries/queries'
+import { Time } from 'lightweight-charts'
 
 export async function getAsset(symbol: string): Promise<Asset> {
   const response = await fetch(`http://localhost:3000/assets/${symbol}`)
@@ -20,6 +22,14 @@ export default async function AssetDashboard({
   const { assetSymbol } = await params
   const { walletId } = await searchParams
   const asset = await getAsset(assetSymbol)
+
+  const assetDailies = await getAssetDailies(assetSymbol)
+
+  const chartData = assetDailies.map(daily => ({
+    time: (Date.parse(daily.date) / 1000) as Time,
+    value: daily.price
+  }))
+
   return (
     <div className="flex flex-col space-y-5 flex-grow">
       <div className="flex flex-col space-y-2">
@@ -50,7 +60,7 @@ export default async function AssetDashboard({
             </Card>
           </div>
           <div className="col-span-3 flex flex-grow">
-            <AssetChartComponent asset={asset} />
+            <AssetChartComponent asset={asset} data={chartData} />
           </div>
         </div>
       </div>
